@@ -1,79 +1,77 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset='utf-8' />
-    <script src="https://code.jquery.com/jquery-2.1.0.min.js"></script>
-  </head>
-  <body>
-    <!--Add a button for the user to click to initiate auth sequence -->
-    <button id="authorize-button" style="visibility:hidden">Authorize</button>
-    <script type="text/javascript">
-      // Enter a client ID for a web application from the Google Developer Console.
-      // In your Developer Console project, add a JavaScript origin that corresponds to the domain
-	    var clientId = '<Insert your client id>';
-
-      // Enter the API key from the Google Develoepr Console - to handle any unauthenticated
-      // requests in the code.
-      var apiKey = '<Insert your api key here>';
-
-	    //Scopes define the kind of service that you wat from google
-	    //Since we are requesting gmail contacts, the scope here refers to the contact fetch
-      // To enter one or more authentication scopes, refer to the documentation for the API.
-      
-	   var scopes = 'https://www.google.com/m8/feeds';
-	   //If you change the below variable to any valid google mail id, it will then fetch the contacts from that mail id [ofcourse with users permission]
-	   var mailid = 'default';
-
-     // Use a button to handle authentication the first time.
-     function handleClientLoad() {
-        gapi.client.setApiKey(apiKey);
-        window.setTimeout(checkAuth,1);
-     }
-
-     function checkAuth() {
-        gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: true}, handleAuthResult);
-     }
-
-	   //This function checks whehther has already authorized our application. If not, it will display the authorize button. If already authorized, it will make the api call to fetch the contacts
-     function handleAuthResult(authResult) {
-        var authorizeButton = document.getElementById('authorize-button');
-        if (authResult && !authResult.error) {
-          authorizeButton.style.visibility = 'hidden';
-          makeApiCall(mailid);
-        } else {
-          authorizeButton.style.visibility = '';
-          authorizeButton.onclick = handleAuthClick;
-        }
-     }
-	   //Click event for authorize button
-     function handleAuthClick(event) {
-        gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: false}, handleAuthResult);
-        return false;
-     }
-
-     // Load the API and make an API call.  Display the results on the screen.
-     function makeApiCall(mailid) {
-		    authParams = gapi.auth.getToken();
-        authParams.alt = 'json';
-        $.ajax({
-          method: 'GET',
-          url: 'https://www.google.com/m8/feeds/contacts/'+mailid+'/full',
-          dataType: 'jsonp',
-          data: authParams,
-          success: function(data) {
-          //This data will contain all contacts of user
-    		  console.log(data);
-    		  //To get email address of contact
-    		  //console.log(output.feed.entry[0].gd$email[0].address);
-    		  //To get name of the contact
-    		  //console.log(output.feed.entry[0].title.$t);
-    	  	console.log('Success'); 
-	      }
-      });
-	  }
-    </script>
-    <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
-    <div id="content"></div>
-    <p>Retrieves the contact list from gmail id</p>
-  </body>
+   <head>
+      <meta charset='utf-8' />
+      <script src="https://code.jquery.com/jquery-2.1.0.min.js"></script>
+   </head>
+   <body>
+      <!--Add a button for the user to click to initiate auth sequence -->
+      <button id="authorize-button" style="visibility:hidden">Authorize</button>
+      <script type="text/javascript">
+         // Enter a client ID for a web application from the Google Developer Console.
+         // In your Developer Console project, add a JavaScript origin that corresponds to the domain
+         var clientId = '<Insert your client id>';
+         
+         // Enter the API key from the Google Develoepr Console - to handle any unauthenticated
+         // requests in the code.
+         var apiKey = '<Insert your api key here>';
+         
+         //Scopes define the kind of service that you wat from google
+         //Since we are requesting gmail contacts, the scope here refers to the contact fetch
+         // To enter one or more authentication scopes, refer to the documentation for the API.
+         
+         var scopes = 'https://www.google.com/m8/feeds';
+         //If you change the below variable to any valid google mail id, it will then fetch the contacts from that mail id [ofcourse with users permission]
+         var mailid = 'default';
+         
+         // Use a button to handle authentication the first time.
+         function handleClientLoad() {
+           gapi.client.setApiKey(apiKey);
+           window.setTimeout(checkAuth,1);
+         }
+         
+         function checkAuth() {
+           gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: true}, handleAuthResult);
+         }
+         
+         //This function checks whehther has already authorized our application. If not, it will display the authorize button. If already authorized, it will make the api call to fetch the contacts
+         function handleAuthResult(authResult) {
+           var authorizeButton = document.getElementById('authorize-button');
+           if (authResult && !authResult.error) {
+             authorizeButton.style.visibility = 'hidden';
+             makeApiCall(mailid);
+           } else {
+             authorizeButton.style.visibility = '';
+             authorizeButton.onclick = handleAuthClick;
+           }
+         }
+         //Click event for authorize button
+         function handleAuthClick(event) {
+           gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: false}, handleAuthResult);
+           return false;
+         }
+         
+         // Load the API and make an API call.  Display the results on the screen.
+         function makeApiCall(mailid) {
+         authParams = gapi.auth.getToken();
+         authParams.alt = 'json';
+         $.ajax({
+         method: 'GET',
+         url: 'https://www.google.com/m8/feeds/contacts/'+mailid+'/full',
+         dataType: 'jsonp',
+         data: authParams,
+         success: function(data) {
+         console.log(data);
+         //console.log(output.feed.entry[0].gd$email[0].address);
+         //console.log(output.feed.entry[0].title.$t);
+         console.log('Success'); 
+         }
+         });
+         console.log(output);
+         }
+      </script>
+      <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
+      <div id="content"></div>
+      <p>Retrieves the contact list from gmail id</p>
+   </body>
 </html>
